@@ -13,7 +13,7 @@ def get_ip_address(domain):
         return "Unable to retrieve IP address"
 
 def print_heading(heading):
-    print("\n" + "\033[1m" + heading + "\033[0m" + "\n")
+    print("\n" + "\033[31m" + "\033[1m" + heading + "\033[0m" + "\n")
 
 def print_separator():
     print("=" * 40)
@@ -87,7 +87,7 @@ def parse_whois_output(output):
         "updated_date": None,
         "creation_date": None,
         "expiration_date": None,
-        " name_servers": None,
+        "name_servers": None,
         "status": None,
         "emails": None,
         "dnssec": None
@@ -124,7 +124,7 @@ def enumerate_subdomains(domain):
                 except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN, dns.resolver.Timeout):
                     pass
     except FileNotFoundError:
-        print("\033[1m subdomains.txt file not found.\033[0m ")
+        print("\033[31m\033[1m subdomains.txt file not found.\033[0m ")
     return subdomains
 
 def port_scan(domain, ip_address):
@@ -141,21 +141,21 @@ def port_scan(domain, ip_address):
     return open_ports
 
 def main(domain):
-    print( "\n\n\033[1m Domain Information Gathering Tool\033[0m")
+    print("\n\n\033[31m\033[1m Domain Information Gathering Tool\033[0m")
     print("=================================\n\n")
     
-    print(f"\033[1m Domain: {domain}\033[0m \n\n")
+    print_heading(f"Domain: {domain}")
 
-    print("\033[1m IP Address\033[0m \n")
+    print_heading("IP Address")
     ip_address = get_ip_address(domain)
     print(f"IP Address: {ip_address}\n\n")
 
-    print("\033[1m DNS Records\033[0m \n")
+    print_heading("DNS Records")
     dns_records = get_dns_records(domain)
     for qtype, records in dns_records.items():
         print(f" {qtype}: {', '.join(records)}\n")
 
-    print("\n\n\033[1m Server Details\033[0m \n")
+    print_heading("Server Details")
     server_details = get_server_details(domain)
     print(f"\033[1m  Web Server\033[0m : {server_details.get('web_server')}\n")
     print(f"\033[1m Operating System\033[0m : {server_details.get('operating_system')}\n")
@@ -172,12 +172,12 @@ def main(domain):
     else:
         print(f" {whois_info}\n")
 
-    print("\n\n\033[1m Subdomains\033[0m \n")
+    print_heading("Subdomains")
     subdomains = enumerate_subdomains(domain)
     for subdomain, ip_address in subdomains:
         print(f"\033[1m  {subdomain}\033[0m : {ip_address}\n")
 
-    print("\n\n\033[1m Open Ports\033[0m \n")
+    print_heading("Open Ports")
     open_ports = port_scan(domain, ip_address)
     for port in open_ports:
         print(f" {port}\n")
